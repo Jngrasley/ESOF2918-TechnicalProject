@@ -1,0 +1,37 @@
+LOS:
+ 0  - Short
+ 1  - Normal
+ 2  - Long
+City
+ 1-38, already numerical. convert to float
+Admission
+ 0  - Urgent
+ 1  - Trauma
+ 2  - Emergency
+Severity
+ 0  - Minor
+ 1  - Moderate
+ 2  - Extreme
+Age
+ 0  - '0-10'
+ 1  - '11-20'
+ 2  - '21-30'
+ 3  - '31-40'
+ 4  - '41-50'
+ 5  - '51-60'
+ 6  - '61-70'
+ 7  - '71-80'
+ 8  - '81-90'
+ 9  - '91-100'
+Range
+ 0  - '0-10'
+ 1  - '11-20'
+ 2  - '21-30'
+ 3  - '31-40'
+ 4  - '41-50'
+ 5  - '51-60'
+ 6  - '61-70'
+ 7  - '71-80'
+ 8  - '81-90'
+ 9  - '91-100'
+ 10 - '100+'
