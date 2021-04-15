@@ -15,10 +15,16 @@ from sklearn import metrics
 from sklearn.preprocessing import scale
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report
 
 #define functions used later in the code, these functions convert string data to corresponding
+def dept_to_numeric():
+    covid_data.loc[covid_data['Department'] == 'gynecology', 'Department'] = 0.0
+    covid_data.loc[covid_data['Department'] == 'anesthesia', 'Department'] = 1.0
+    covid_data.loc[covid_data['Department'] == 'radiotherapy', 'Department'] = 2.0
+    covid_data.loc[covid_data['Department'] == 'TB & Chest disease', 'Department'] = 3.0
+    covid_data.loc[covid_data['Department'] == 'surgery', 'Department'] = 4.0
 def admission_to_numeric():
     covid_data.loc[covid_data['Admission'] == 'Urgent', 'Admission'] = 0.0
     covid_data.loc[covid_data['Admission'] == 'Trauma', 'Admission'] = 1.0
@@ -57,7 +63,7 @@ covid_data = pd.read_csv('coviddataset.csv') #no delimiters required
 #declare splitting constants
     #this is how many lines will be used to train the models
 dataset_row_count = len(covid_data.index)
-dataset_split = (int(dataset_row_count*0.05)) #5% of the dataset will be used for training the models 
+dataset_split = (int(dataset_row_count*0.90)) # 90% of the dataset will be used for training the models 
 
 #pre-processing and imputation
     #stage includes reducing csv to only the prediction columns
@@ -69,16 +75,19 @@ covid_data = covid_data[[colList[11]] + [colList[12]] + [colList[13]] + [colList
 #alter column names for proper identification in results
 covid_data = covid_data.rename(columns={"Stay": "Range", "Severity of Illness": "Severity", "City_Code_Patient": "City", "Type of Admission": "Admission"})
 
-#imputation correction based on the higher avg value
-covid_data['City'].fillna(value=8, inplace=True)
+#check for null data and remove
+print(covid_data.isnull().sum())
+covid_data = covid_data.dropna(how='any',axis=0)
 covid_data.loc[covid_data['Range'] == 'More than 100 Days', 'Range'] = '100+'
 
 #convert string values to numerical values, see notepad file for referenced values!
+dept_to_numeric()
 admission_to_numeric()
 severity_to_numeric()
 age_to_numeric()
 range_to_numeric()
 #convert numerical objects to float64 for model
+covid_data['Department'] = covid_data.Department.astype(float)
 covid_data['Admission'] = covid_data.Admission.astype(float)
 covid_data['Severity'] = covid_data.Severity.astype(float)
 covid_data['Age'] = covid_data.Age.astype(float)
@@ -97,7 +106,7 @@ LR_training_input = scale(LR_training_data)
 LR_training_output = LR_training_data['Range'].values
 
 #begin defining the model and fit to the dataset
-LRModel = LogisticRegression(multi_class='multinomial', solver='sag')
+LRModel = LogisticRegression(multi_class='multinomial')
 start = time.time()
 LRModel.fit(LR_training_input, LR_training_output)
 stop = time.time() 
@@ -146,7 +155,7 @@ DT_training_input = scale(DT_training_data)
 DT_training_output = DT_training_data['Range'].values
 
 #begin defining the model and fit to the dataset
-DTModel = DecisionTreeRegressor()
+DTModel = DecisionTreeClassifier()
 start = time.time()
 DTModel.fit(DT_training_input, DT_training_output)
 stop = time.time()
@@ -203,7 +212,7 @@ range_ax.set_xlabel('Stay Ranges')
 range_ax.set_xticks(ranges_labels)
 range_ax.set_xticklabels(ranges)
 range_ax.set_ylabel('Number of Patients')
-range_ax.set_yticks([0,20000,40000,60000,80000,100000])
+range_ax.set_yticks([0,2500,5000,7500,10000,12500])
 
 range_ax.legend()
 
