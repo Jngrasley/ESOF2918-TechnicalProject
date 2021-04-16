@@ -68,9 +68,9 @@ dataset_split = (int(dataset_row_count*0.90)) # 90% of the dataset will be used 
 #pre-processing and imputation
     #stage includes reducing csv to only the prediction columns
     #begin preprocessing with dropping irrelavent tables
-    #important columns include the city code of patient, severity of illness, age, and LOS
+    #important columns include the department, city code of patient, severity of illness, age, and LOS
 colList = list(covid_data.columns)
-covid_data = covid_data[[colList[11]] + [colList[12]] + [colList[13]] + [colList[15]] + [colList[17]]]
+covid_data = covid_data[[colList[6]] + [colList[11]] + [colList[12]] + [colList[13]] + [colList[15]] + [colList[17]]]
 
 #alter column names for proper identification in results
 covid_data = covid_data.rename(columns={"Stay": "Range", "Severity of Illness": "Severity", "City_Code_Patient": "City", "Type of Admission": "Admission"})
